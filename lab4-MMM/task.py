@@ -42,9 +42,49 @@ import matplotlib.pyplot as plt
 
 # spec = np.fft.fftshift(np.fft.fft(multiply(data)))
 # f_axe = np.fft.fftshift(f_axe)
-# plt.plot(f_axe, np.log(spec))
+# plt.plot(f_axe, 20*np.log10(spec))
 # plt.grid(True)
-"""------------------------------------#3-----------------------------------"""
+"""-------------------------------#3-mannualy-------------------------------"""
+data = np.fromfile("var01_z3.bin", dtype = np.float64)
+print(data)
+sr = 1000
+f_axe = np.fft.fftfreq(len(data), sr)
+window_length = 1000
+overlap = 999
+
+spectrogram = []
+for i in range(0, len(data) - window_length, overlap):
+    window = np.sin(np.pi * np.arange(1000)/ (len(data) - 1)) * data[i:i+window_length]
+    spectr = np.abs(np.fft.fft(window))[:window_length//2]
+    spectrogram.append(spectr)
+
+
+plt.imshow(np.transpose(np.array(spectrogram)),aspect='auto', origin='lower')
+plt.xlabel('Time')
+plt.ylabel('Frequency')
+plt.colorbar()
+
+
+# overlap = 999
+# # spec = []
+# # for i in range(0, len(data)):
+# #     window = np.sin(np.pi * np.arange(1000)/ (len(data) - 1)) *  data[i:i+1000]
+# #     spectr = np.fft.fft(window)[:1000]
+# #     spec.append(spectr)
+
+# def sin_window(elem, mass):
+#      return np.sin(np.pi * elem / (len(mass) - 1))
+    
+# def spectrogram(mass):
+#     ans = []
+#     for i in range(len(mass)):
+#         window = [sin_window(elem, mass) for elem in mass[i:i+1000]]
+#         ans.append(np.abs(np.fft.fft(window)))
+#     return ans
+# print(spectrogram(data))
+
+
+"""-----------------------------------#3------------------------------------"""
 # from scipy.signal import spectrogram
 # data = np.fromfile("var01_z3.bin", dtype = np.float64)
 # print(data)
@@ -64,32 +104,3 @@ import matplotlib.pyplot as plt
 # f, t, Sxx = spectrogram(data, sr, window = np.sin(np.pi * np.arange(1000)/ (len(data) - 1)), noverlap = 999)
 # # f_axe = np.fft.fftshift(f_axe)
 # plt.pcolormesh(t, f, np.log(Sxx))
-
-"""-----chat-GPT-----"""
-
-# import numpy as np
-# import matplotlib.pyplot as plt
-
-# # Генерируем сигнал
-# fs = 1000  # Частота дискретизации
-# t = np.arange(0, 10, 1/fs)
-# data = np.fromfile("var01_z3.bin", dtype = np.float64)
-
-# plt.figure(figsize=(10, 5))
-# plt.plot(t, data)
-# plt.xlabel('Время, с')
-# plt.ylabel('Амплитуда')
-# plt.title('Цифровой сигнал')
-# plt.grid(True)
-# plt.show()
-
-# from scipy.signal import spectrogram
-
-# # Построение спектрограммы с синус-окном
-# f, t, Sxx = spectrogram(data, fs=fs, window = np.sin(np.pi * np.arange(1000)/ (len(data) - 1)), noverlap=999)
-# plt.pcolormesh(t, f, 10*np.log10(Sxx))
-# plt.xlabel('Время, с')
-# plt.ylabel('Частота, Гц')
-# plt.title('Спектрограмма')
-# plt.colorbar(label='ДБ')
-# plt.show()
