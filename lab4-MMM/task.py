@@ -59,7 +59,7 @@ for i in range(0, len(data) - window_length, overlap):
     spectrogram.append(spectr)
 
 
-plt.imshow(np.transpose(np.array(spectrogram)),aspect='auto', origin='lower')
+plt.imshow(20*np.log10(np.transpose(np.array(spectrogram))),aspect='auto', origin='lower')
 plt.xlabel('Time')
 plt.ylabel('Frequency')
 plt.colorbar(label = 'dB')
