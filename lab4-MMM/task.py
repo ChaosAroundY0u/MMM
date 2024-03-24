@@ -62,7 +62,7 @@ for i in range(0, len(data) - window_length, overlap):
 plt.imshow(np.transpose(np.array(spectrogram)),aspect='auto', origin='lower')
 plt.xlabel('Time')
 plt.ylabel('Frequency')
-plt.colorbar()
+plt.colorbar(label = 'dB')
 
 
 # overlap = 999
