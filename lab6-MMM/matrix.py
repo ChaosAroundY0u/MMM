@@ -79,7 +79,10 @@ def Jacobi(A, B, n = 200, init_guess = None):
     for i in range(n):
         init_guess = (B - np.dot(T, init_guess)) / D
         
-    return init_guess
+    return np.array([sub_init_guess[0] for sub_init_guess in init_guess])
+
+
+
         
 print("Solution with Jacobi method: \n", Jacobi(A, B))
 
@@ -93,9 +96,13 @@ print("2 Norm: ", np.linalg.cond(A, 2))
 print("frobenius norm: ",np.linalg.cond(A, 'fro'))
 print("frobenius norm: ", np.linalg.norm(A, 'fro') * np.linalg.norm(np.linalg.inv(A), 'fro'))
 
-#residual vector
-rv_gauss = B - np.dot(A, gauss(A, B))
-rv_jacobi = B - np.dot(A, Jacobi(A, B))
+
+rv_gauss = np.dot(A, gauss(A, B)) - np.array([i for i in range(1, 101)])
+
+rv_jacobi = np.dot(A,Jacobi(A, B)) - np.array([i for i in range(1, 101)])
+
+
+
 print("Residual vector for Gauss method: \n", rv_gauss)
 print("Residual vector for Jacobi method: \n", rv_jacobi)
 print("Norm of residual vector for Gauss method: ", np.sqrt(np.sum(rv_gauss**2)))
