@@ -1,5 +1,4 @@
 import numpy as np
-# import scipy as sc
 
 n, ai, ci, bi, pi = 99, 1, 1, 10, 1
 
@@ -12,17 +11,8 @@ def fill_array(N):
         array[i][i] = ci
     
     return (array[2:])
-# A = (([[bi, ci] + [0 for _ in range(n+1-2)]]))
-# A_part = fill_array(n+1)
-# print(A)
-# A = np.array(A + A_part)
-# print(A)
 
-# A = np.array([[ai, bi, ci] + [0 for j in range(n-3)] for i in range(n+1)] , float) + np.array([1 for k in range(n+1)], float)
-# A = np.array((np.array([bi, ci] + [0 for j in range(n+1-2)]) + np.array([[ai, bi, ci] + [0 for i in range(n+1-3)] for i in range(n)]) + np.array([pi for k in range(n+1)])), float )
 A = (([[bi, ci] + [0 for _ in range(n+1-2)]]))
-
-# A = np.vstack([A, (np.array([[ai, bi, ci] + [0 for i in range(n+1-3)] for j in range(n-1)]))])
 A_part = fill_array(n+1)
 A = np.array(A + A_part)
 
@@ -62,29 +52,23 @@ def gauss(A, B):
         for j in range(k + 1, n):
             x[k] = x[k] - augmented_matrix[k][j] * x[j]
         x[k] = x[k] / augmented_matrix[k][k]
-    # for ans in range(n):
-    #     print("x", ans+1, "=", x[ans])
-    
     return x
 
 print("Solution with Gauss method: \n", gauss(A, B))
 
 #Jacobi iteration method
-def Jacobi(A, B, n = 200, init_guess = None):
-    if init_guess is None:
-        init_guess = np.zeros(len(A[0]))
+def Jacobi(A, B):
+    x = None
+    if x is None:
+        x = np.zeros(len(A[0]))
     D = np.diag(A)
-    T = A - np.diagflat(D)
-    
-    for i in range(n):
-        init_guess = (B - np.dot(T, init_guess)) / D
-        
-    return np.array([sub_init_guess[0] for sub_init_guess in init_guess])
+    R = A - np.diagflat(D)
+    for i in range(200):
+        x = (B - np.dot(R, x)) / D
+    return x
 
-
-
-        
-print("Solution with Jacobi method: \n", Jacobi(A, B))
+B_J= np.array([i+1 for i in range(n+1)], float)
+print("Solution with Jacobi method: \n", Jacobi(A, B_J))
 
 #Eigenvalues
 print("Lambda max = ", max(np.linalg.eigvals(A)), 
@@ -96,12 +80,9 @@ print("2 Norm: ", np.linalg.cond(A, 2))
 print("frobenius norm: ",np.linalg.cond(A, 'fro'))
 print("frobenius norm: ", np.linalg.norm(A, 'fro') * np.linalg.norm(np.linalg.inv(A), 'fro'))
 
-
 rv_gauss = np.dot(A, gauss(A, B)) - np.array([i for i in range(1, 101)])
 
-rv_jacobi = np.dot(A,Jacobi(A, B)) - np.array([i for i in range(1, 101)])
-
-
+rv_jacobi = np.dot(A,Jacobi(A, B_J)) - np.array([i for i in range(1, 101)])
 
 print("Residual vector for Gauss method: \n", rv_gauss)
 print("Residual vector for Jacobi method: \n", rv_jacobi)
