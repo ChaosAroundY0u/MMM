@@ -71,8 +71,8 @@ B_J= np.array([i+1 for i in range(n+1)], float)
 print("Solution with Jacobi method: \n", Jacobi(A, B_J))
 
 #Eigenvalues
-print("Lambda max = ", max(np.linalg.eigvals(A)), 
-      "Lambda min = ", min(np.linalg.eigvals(A)))
+print("Lambda max = ", max(np.linalg.eigvals(A))) 
+print("Lambda min = ", min(np.linalg.eigvals(A)))
 
 #Condition number
 print("1 Norm: ", np.linalg.cond(A, 1))
@@ -88,3 +88,15 @@ print("Residual vector for Gauss method: \n", rv_gauss)
 print("Residual vector for Jacobi method: \n", rv_jacobi)
 print("Norm of residual vector for Gauss method: ", np.sqrt(np.sum(rv_gauss**2)))
 print("Norm of residual vector for Jacobi method: ", np.sqrt(np.sum(rv_jacobi**2)))
+
+def eigenvalues(A):
+    x = np.array([1 for i in range(100)])
+    num_iter = 100
+    for i in range(num_iter):
+        y = np.dot(A, x)
+        x = y / np.linalg.norm(y)
+    ma = np.dot(np.dot(x, A), x)
+    min = np.dot(np.dot(x, np.linalg.inv(A)), x)
+    print("Max Lambda: ", ma)
+    print("Min Lambda: ", min)
+print(eigenvalues((A)))
