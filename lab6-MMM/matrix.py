@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 n, ai, ci, bi, pi = 99, 1, 1, 10, 1
 
@@ -58,14 +59,16 @@ print("Solution with Gauss method: \n", gauss(A, B))
 
 #Jacobi iteration method
 def Jacobi(A, B):
-    x = None
-    if x is None:
-        x = np.zeros(len(A[0]))
+    x = np.array([0.1 for i in range(len(A[0]))])
+    x0 = np.zeros_like(x)
     D = np.diag(A)
+    count = 0
     R = A - np.diagflat(D)
-    for i in range(200):
-        x = (B - np.dot(R, x)) / D
-    return x
+    while(np.linalg.norm(x - x0) > 10**-4):
+        x0 = x
+        x = (B - np.dot(R, x0)) / D
+        count += 1
+    return x, count
 
 B_J= np.array([i+1 for i in range(n+1)], float)
 print("Solution with Jacobi method: \n", Jacobi(A, B_J))
@@ -82,21 +85,25 @@ print("frobenius norm: ", np.linalg.norm(A, 'fro') * np.linalg.norm(np.linalg.in
 
 rv_gauss = np.dot(A, gauss(A, B)) - np.array([i for i in range(1, 101)])
 
-rv_jacobi = np.dot(A,Jacobi(A, B_J)) - np.array([i for i in range(1, 101)])
+rv_jacobi = np.dot(A,Jacobi(A, B_J)[0]) - np.array([i for i in range(1, 101)])
 
 print("Residual vector for Gauss method: \n", rv_gauss)
 print("Residual vector for Jacobi method: \n", rv_jacobi)
 print("Norm of residual vector for Gauss method: ", np.sqrt(np.sum(rv_gauss**2)))
 print("Norm of residual vector for Jacobi method: ", np.sqrt(np.sum(rv_jacobi**2)))
 
-def eigenvalues(A):
-    x = np.array([1 for i in range(100)])
-    num_iter = 100
-    for i in range(num_iter):
-        y = np.dot(A, x)
-        x = y / np.linalg.norm(y)
-    ma = np.dot(np.dot(x, A), x)
-    min = np.dot(np.dot(x, np.linalg.inv(A)), x)
-    print("Max Lambda: ", ma)
-    print("Min Lambda: ", min)
+def eigenvalues(A): #does not work !!
+    n = A.shape[0]
+    V = np.eye(n)
+    count = 0
+    while True:
+        Q, R = np.linalg.qr(A)
+        A_new = np.dot(R, Q)
+        V = np.dot(V, Q)
+        count += 1
+        if np.abs(np.diag(A_new) - np.diag(np.diag(A_new))).max() < 10**(-4):
+            break
+        A = A_new
+    eigenvals = np.diag(A_new)
+    return eigenvals, count
 print(eigenvalues((A)))
